@@ -4,7 +4,11 @@ import random
 import shelve
 import GameLogic
 
+
 class MachinePlayer:
+    """
+    Логика ходов машины
+    """
     def __init__(self, path, gameLvl):
         self.d = shelve.open(path)
         self.lvl = gameLvl
@@ -28,6 +32,6 @@ class MachinePlayer:
             return None
 
     def trySaveRandMove(self, move):
-        if self.lvl.levelmap[move[1]][move[0]] == GameLogic.enumStates.player1[1]:
+        if self.lvl.levelmap[move[1]][move[0]] == GameLogic.enumPlayers.player1[1]:
             if move not in self.d["goodMove"]:
                 self.d["goodMove"].append(move)

@@ -7,6 +7,9 @@ import pygame.gfxdraw
 
 
 class enumColor:
+    """
+    Описание цветов игрового поля
+    """
     oddBlockColor = "#7EB044"
     evenBlockColor = "#519600"
 
@@ -16,8 +19,13 @@ class enumColor:
     ripPlayer1Color = "#A99AB0"
     ripPlayer2Color = "#A9FFB0"
 
+    fieldBackgroundColor = "#519600"
+
 
 class enumFigures:
+    """
+    Типы фигур на игровом поле
+    """
     player1 = "1"
     player2 = "2"
     ripPlayer1 = "*"
@@ -26,6 +34,10 @@ class enumFigures:
 
 
 class Level:
+    """
+    Карта уровня и его отрисовка
+    """
+
     def __init__(self, screen, N):
         self.screen = screen
         self.levelMap = [[enumFigures.empty for x in range(N)] for x in range(N)]
@@ -62,11 +74,7 @@ class Level:
 
     def drawFigure(self, point, color):
         rect = [int(point[0] * self.widthBlock), int(point[1] * self.heightBlock), self.widthBlock, self.heightBlock]
-        #print(rect)
         pygame.draw.ellipse(self.screen, pygame.Color(color), rect)
-        # rect = [int(point[0] * self.widthBlock), int(point[1] * self.heightBlock), int(self.widthBlock), int(self.heightBlock)]
-        # #print(rect)
-        # # pygame.gfxdraw.filled_ellipse(self.screen, rect[0], rect[1], rect[2], rect[3], pygame.Color(color))
 
     def transformMousePosToCells(self, mouseRelativePoint):
         return math.floor(mouseRelativePoint[0] / self.widthBlock), math.floor(mouseRelativePoint[1] / self.heightBlock)

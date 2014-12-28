@@ -3,19 +3,22 @@ __author__ = 'muratov'
 import Level
 from collections import defaultdict
 import random
+import Configs
 
 
-class EndGame(Exception):
-    pass
 
 
 class enumControlType:
+    """
+    Перечисление видов управления
+    """
     machine = "machine"
     human = "human"
 
 
-class enumStates:
+class enumPlayers:
     """
+    описание игроков
     0 - тип управления
     1 - имя
     2 - тип фигур
@@ -26,12 +29,15 @@ class enumStates:
 
 
 class gameLogic:
+    """
+    Механика игры
+    """
     maxTurns = 5
 
     def __init__(self, lvl):
         self.level = lvl
         self.locateStartViruses()
-        self.players = [enumStates.player1, enumStates.player2]
+        self.players = [enumPlayers.player1, enumPlayers.player2]
         self.activePlayer = self.getStartPlayer()
         self.turns = gameLogic.maxTurns
         self.nextState()
@@ -62,7 +68,7 @@ class gameLogic:
         player - константа из level
         """
         markers = [self.activePlayer[2], self.activePlayer[3]]
-        moves = []
+        moves = list()
         for column in range(self.level.N):
             for row in range(self.level.N):
                 if self.level.levelMap[column][row] == player:
@@ -72,7 +78,7 @@ class gameLogic:
             cell = moves[num]
             if self.level.levelMap[cell[1]][cell[0]] != self.activePlayer[3]:
                 v1.append(cell)
-            visited = v1
+        moves = v1
         return moves
 
     def movesFromPoint(self, markers, point, visited):
@@ -81,39 +87,35 @@ class gameLogic:
         """
         p = point
         tour = [(p[0] - 1, p[1] - 1), (p[0], p[1] - 1), (p[0] + 1, p[1] - 1),
-                (p[0] - 1, p[1]),                           (p[0] + 1, p[1]),
+                (p[0] - 1, p[1]), (p[0] + 1, p[1]),
                 (p[0] - 1, p[1] + 1), (p[0], p[1] + 1), (p[0] + 1, p[1] + 1)]
-        for cell in tour:
+        for x, y in tour:
             try:
-                if cell not in visited:
-                    if 0 <= cell[0] < self.level.N and 0 <= cell[1] < self.level.N:
+                if (x, y) not in visited:
+                    if 0 <= x < self.level.N and 0 <= y < self.level.N:
                         if self.activePlayer[2] == Level.enumFigures.player2:
                             enemy = Level.enumFigures.player1
                         else:
                             enemy = Level.enumFigures.player2
-                        if self.level.levelMap[cell[1]][cell[0]] in [Level.enumFigures.empty, enemy]:
-                            visited.append(cell)
+                        if self.level.levelMap[y][x] in [Level.enumFigures.empty, enemy]:
+                            visited.append((x, y))
                         else:
 
-                            if self.level.levelMap[cell[1]][cell[0]] == self.activePlayer[3]:
-                                visited.append(cell)
-                                self.movesFromPoint(markers, cell, visited)
+                            if self.level.levelMap[y][x] == self.activePlayer[3]:
+                                visited.append((x, y))
+                                self.movesFromPoint(markers, (x, y), visited)
 
             except IndexError:
                 pass
-
-
-
-
 
     def updateScore(self):
         d = defaultdict(int)
         for i in range(self.level.N):
             for j in range(self.level.N):
-                if self.level.levelMap[i][j] == enumStates.player1[2]:
-                    d[enumStates.player1[1]] += 1
-                elif self.level.levelMap[i][j] == enumStates.player2[2]:
-                    d[enumStates.player2[1]] += 1
+                if self.level.levelMap[i][j] == enumPlayers.player1[2]:
+                    d[enumPlayers.player1[1]] += 1
+                elif self.level.levelMap[i][j] == enumPlayers.player2[2]:
+                    d[enumPlayers.player2[1]] += 1
         return d
 
     def nextState(self):
@@ -130,12 +132,11 @@ class gameLogic:
                      "player": self.activePlayer,
                      "moves": self.availableMoves(self.activePlayer[2])}
         if len(stateDict["moves"]) == 0:
-            winner = None
             if self.activePlayer == self.players[0]:
                 winner = self.players[1]
             else:
                 winner = self.players[0]
-            raise EndGame("Win {0}".format(winner[1]))
+            raise Configs.EndGame("Win {0}".format(winner[1]))
         else:
             for key in stateDict["score"]:
                 if stateDict["score"][key] == 0:
@@ -143,12 +144,10 @@ class gameLogic:
                         winner = self.players[1]
                     else:
                         winner = self.players[0]
-                    raise EndGame("Win {0}".format(winner[1]))
+                    raise Configs.EndGame("Win {0}".format(winner[1]))
         self.state = stateDict
-        # print("nextState", self.state)
 
     def makeMove(self, move):
-        # print("makeMove", move)
         if self.state is not None:
             if move in self.state["moves"]:
                 if self.level.levelMap[move[1]][move[0]] == self.activePlayer[3]:

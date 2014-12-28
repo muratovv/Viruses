@@ -4,7 +4,11 @@ import pygame
 hudColor = "#000000"
 
 
-class Hud:
+class Indicator:
+    """
+    Игровой индикатор
+    """
+    HUDs = dict()
     def __init__(self, screen, font, template, StartPoint):
         self.point = StartPoint
         self.screen = screen
