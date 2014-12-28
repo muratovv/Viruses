@@ -1,15 +1,24 @@
 __author__ = 'muratov'
 
 import sys
+import pygame
+
 
 class Configuration:
-    N = 5
+    """
+    Начальная конфигурация
+    """
+    N = 10
 
     resolution = (800, 600)
     appName = "Вирусы"
     font = "monospace", 18
     backGroundColor = "#E6FF8A"
     gameFieldOffset = (0, 100)
+
+    # use after pygame.init
+    gameFont = None
+    screen = None
 
     @staticmethod
     def getCommandLineArgs():
@@ -31,5 +40,19 @@ class Configuration:
         except (ValueError, IndexError) as ex:
             print(ex)
 
-class EndGame(Exception):
-    pass
+
+
+class enumColorGameField:
+    """
+    Описание цветов игрового поля
+    """
+    oddBlockColor = "#7EB044"
+    evenBlockColor = "#519600"
+
+    player1Color = "#750CE8"
+    player2Color = "#990054"
+
+    ripPlayer1Color = "#A99AB0"
+    ripPlayer2Color = "#A9FFB0"
+
+    fieldBackgroundColor = "#519600"

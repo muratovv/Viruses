@@ -10,26 +10,30 @@ import sys
 import Level
 import GameLogic
 import Player
-from Configs import Configuration as conf, EndGame
+from Configs import Configuration as conf
 from Indicator import Indicator
 
 
 def init():
-    pygame.init()
-    global gameFont, screen
-    gameFont = pygame.font.SysFont(*conf.font)
-    screen = pygame.display.set_mode(conf.resolution)
-    pygame.display.set_caption(conf.appName)
+    conf.init()
 
 
 def initHUD():
-    Indicator.HUDs["score"] = Indicator(screen, gameFont, "Score", (10, 10))
-    Indicator.HUDs["player"] = Indicator(screen, gameFont, "player {0}", (10, 30))
-    Indicator.HUDs["computer"] = Indicator(screen, gameFont, "computer {0}", (10, 50))
-    Indicator.HUDs["move"] = Indicator(screen, gameFont, "move {0}, remaining steps {1}", (300, 10))
+    Indicator.HUDs["score"] = Indicator(conf.screen, conf.gameFont, "Score", (10, 10))
+    Indicator.HUDs["player"] = Indicator(conf.screen, conf.gameFont, "player {0}", (10, 30))
+    Indicator.HUDs["computer"] = Indicator(conf.screen, conf.gameFont, "computer {0}", (10, 50))
+    Indicator.HUDs["move"] = Indicator(conf.screen, conf.gameFont, "move {0}, remaining steps {1}", (300, 10))
+
+
+def init():
+    pygame.init()
+    conf.gameFont = pygame.font.SysFont(*conf.font)
+    conf.screen = pygame.display.set_mode(conf.resolution)
+    pygame.display.set_caption(conf.appName)
 
 
 def mainLoop():
+    pygame.init()
     init()
     initHUD()
     clock = pygame.time.Clock()
@@ -39,7 +43,7 @@ def mainLoop():
     bg.fill(pygame.Color(conf.backGroundColor))
     gameField = pygame.Surface((conf.resolution[0] - conf.gameFieldOffset[0], conf.resolution[1] - conf.gameFieldOffset[1]))
     gameField.fill(pygame.Color(Level.enumColor.fieldBackgroundColor))
-    lvl = Level.Level(gameField, 10)
+    lvl = Level.Level(gameField, conf.N)
     logic = GameLogic.gameLogic(lvl)
     machine = Player.MachinePlayer("base", lvl)
 
@@ -63,12 +67,14 @@ def mainLoop():
         if logic.activePlayer[0] == GameLogic.enumControlType.machine:
             move = machine.makeMove(logic.state["moves"])
             logic.makeMove(move)
+        if logic.exitState[0]:
+            return logic.exitState[1]
 
 
 
         # show block
-        screen.blit(bg, (0, 0))
-        screen.blit(gameField, conf.gameFieldOffset)
+        conf.screen.blit(bg, (0, 0))
+        conf.screen.blit(gameField, conf.gameFieldOffset)
         lvl.drawLevel()
         for hud in Indicator.HUDs.values():
             hud.show()
@@ -79,6 +85,7 @@ def mainLoop():
 if __name__ == '__main__':
     conf.getCommandLineArgs()
     try:
-        mainLoop()
-    except EndGame as ex:
+        m = mainLoop()
+        print(m)
+    except Exception as ex:
         print(ex)

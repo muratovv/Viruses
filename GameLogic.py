@@ -3,9 +3,6 @@ __author__ = 'muratov'
 import Level
 from collections import defaultdict
 import random
-import Configs
-
-
 
 
 class enumControlType:
@@ -18,7 +15,7 @@ class enumControlType:
 
 class enumPlayers:
     """
-    описание игроков
+    класс описания игроков
     0 - тип управления
     1 - имя
     2 - тип фигур
@@ -30,7 +27,7 @@ class enumPlayers:
 
 class gameLogic:
     """
-    Механика игры
+    Менеджер управления ходами
     """
     maxTurns = 5
 
@@ -39,6 +36,7 @@ class gameLogic:
         self.locateStartViruses()
         self.players = [enumPlayers.player1, enumPlayers.player2]
         self.activePlayer = self.getStartPlayer()
+        self.exitState = (False, None)
         self.turns = gameLogic.maxTurns
         self.nextState()
         self.turns += 1
@@ -108,15 +106,6 @@ class gameLogic:
             except IndexError:
                 pass
 
-    def updateScore(self):
-        d = defaultdict(int)
-        for i in range(self.level.N):
-            for j in range(self.level.N):
-                if self.level.levelMap[i][j] == enumPlayers.player1[2]:
-                    d[enumPlayers.player1[1]] += 1
-                elif self.level.levelMap[i][j] == enumPlayers.player2[2]:
-                    d[enumPlayers.player2[1]] += 1
-        return d
 
     def nextState(self):
 
@@ -128,7 +117,7 @@ class gameLogic:
                 self.activePlayer = self.players[0]
         else:
             self.turns -= 1
-        stateDict = {"score": self.updateScore(),
+        stateDict = {"score": updateScore(self.level),
                      "player": self.activePlayer,
                      "moves": self.availableMoves(self.activePlayer[2])}
         if len(stateDict["moves"]) == 0:
@@ -136,7 +125,7 @@ class gameLogic:
                 winner = self.players[1]
             else:
                 winner = self.players[0]
-            raise Configs.EndGame("Win {0}".format(winner[1]))
+            self.exitState = (True, "Win {0}".format(winner[1]))
         else:
             for key in stateDict["score"]:
                 if stateDict["score"][key] == 0:
@@ -144,7 +133,7 @@ class gameLogic:
                         winner = self.players[1]
                     else:
                         winner = self.players[0]
-                    raise Configs.EndGame("Win {0}".format(winner[1]))
+                    self.exitState = (True, "Win {0}".format(winner[1]))
         self.state = stateDict
 
     def makeMove(self, move):
@@ -160,3 +149,14 @@ class gameLogic:
                         self.level.levelMap[move[1]][move[0]] = self.activePlayer[3]
 
                 self.nextState()
+
+
+def updateScore(lvl):
+    d = defaultdict(int)
+    for i in range(lvl.N):
+        for j in range(lvl.N):
+            if lvl.levelMap[i][j] == enumPlayers.player1[2]:
+                d[enumPlayers.player1[1]] += 1
+            elif lvl.levelMap[i][j] == enumPlayers.player2[2]:
+                d[enumPlayers.player2[1]] += 1
+    return d

@@ -6,20 +6,7 @@ import pygame
 import pygame.gfxdraw
 
 
-class enumColor:
-    """
-    Описание цветов игрового поля
-    """
-    oddBlockColor = "#7EB044"
-    evenBlockColor = "#519600"
-
-    player1Color = "#750CE8"
-    player2Color = "#990054"
-
-    ripPlayer1Color = "#A99AB0"
-    ripPlayer2Color = "#A9FFB0"
-
-    fieldBackgroundColor = "#519600"
+from Configs import enumColorGameField as enumColor
 
 
 class enumFigures:

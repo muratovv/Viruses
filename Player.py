@@ -7,7 +7,7 @@ import GameLogic
 
 class MachinePlayer:
     """
-    Логика ходов машины
+    Класс управляет ходами компьютера
     """
     def __init__(self, path, gameLvl):
         self.d = shelve.open(path)
