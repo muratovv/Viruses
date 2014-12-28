@@ -5,8 +5,6 @@
 """
 
 __author__ = 'muratov'
-import sys
-
 import pygame
 import sys
 import Level
