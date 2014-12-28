@@ -6,7 +6,7 @@ import pygame
 
 class Configuration:
     """
-    Начальная конфигурация
+    Начальная конфигурация.
     """
     N = 10
 

@@ -22,7 +22,7 @@ class enumFigures:
 
 class Level:
     """
-    Карта уровня и его отрисовка
+    Карта уровня и отрисовка.
     """
 
     def __init__(self, screen, N):

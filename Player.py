@@ -7,7 +7,8 @@ import GameLogic
 
 class MachinePlayer:
     """
-    Класс управляет ходами компьютера
+    Класс управляет ходами компьютера.
+    makeMove - выдает позицию, на которую компьютер хочет поставить фишку.
     """
     def __init__(self, path, gameLvl):
         self.d = shelve.open(path)
