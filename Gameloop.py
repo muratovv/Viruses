@@ -69,6 +69,9 @@ def mainLoop():
             move = machine.makeMove(logic.state["moves"])
             logic.makeMove(move)
         if logic.exitState[0]:
+            if logic.exitState[1] == GameLogic.enumPlayers.player2[1]:
+                machine.flushHistory()
+            machine.close()
             return logic.exitState[1]
 
 
@@ -85,8 +88,5 @@ def mainLoop():
 
 if __name__ == '__main__':
     conf.getCommandLineArgs()
-    try:
-        m = mainLoop()
-        print(m)
-    except Exception as ex:
-        print(ex)
+    winner = mainLoop()
+    print("Win", winner)

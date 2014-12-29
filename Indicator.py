@@ -1,7 +1,7 @@
 __author__ = 'muratov'
 import pygame
+import Configs
 
-hudColor = "#000000"
 
 
 class Indicator:
@@ -17,7 +17,7 @@ class Indicator:
 
     def show(self):
         if self.text:
-            label1 = self.font.render(self.text, 2, pygame.Color(hudColor))
+            label1 = self.font.render(self.text, 2, pygame.Color(Configs.HudColor.hudColor))
             self.screen.blit(label1, self.point)
 
     def template(self, template):

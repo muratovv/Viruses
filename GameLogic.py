@@ -40,6 +40,7 @@ class gameLogic:
         self.activePlayer = self.getStartPlayer()
         self.exitState = (False, None)
         self.turns = gameLogic.maxTurns
+        self.state = None
         self.nextState()
         self.turns += 1
 
@@ -108,7 +109,6 @@ class gameLogic:
             except IndexError:
                 pass
 
-
     def nextState(self):
 
         if self.turns == 1:
@@ -127,7 +127,7 @@ class gameLogic:
                 winner = self.players[1]
             else:
                 winner = self.players[0]
-            self.exitState = (True, "Win {0}".format(winner[1]))
+            self.exitState = (True, "{0}".format(winner[1]))
         else:
             for key in stateDict["score"]:
                 if stateDict["score"][key] == 0:
@@ -135,7 +135,7 @@ class gameLogic:
                         winner = self.players[1]
                     else:
                         winner = self.players[0]
-                    self.exitState = (True, "Win {0}".format(winner[1]))
+                    self.exitState = (True, "{0}".format(winner[1]))
         self.state = stateDict
 
     def makeMove(self, move):
@@ -151,6 +151,12 @@ class gameLogic:
                         self.level.levelMap[move[1]][move[0]] = self.activePlayer[3]
 
                 self.nextState()
+        else:
+            if self.activePlayer == self.players[0]:
+                winner = self.players[1]
+            else:
+                winner = self.players[0]
+            self.exitState = (True, "{0}".format(winner[1]))
 
 
 def updateScore(lvl):

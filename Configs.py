@@ -1,7 +1,6 @@
 __author__ = 'muratov'
 
 import sys
-import pygame
 
 
 class Configuration:
@@ -56,3 +55,6 @@ class enumColorGameField:
     ripPlayer2Color = "#A9FFB0"
 
     fieldBackgroundColor = "#519600"
+
+class HudColor:
+    hudColor = "#000000"
